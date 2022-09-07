@@ -1,0 +1,92 @@
+---
+# file found on this repo
+# tasks file for ansible-raspberrypi-docker
+
+# http://docs.ansible.com/ansible/latest/apt_module.html
+- name: "Installe les paquets nécessaires à l'utilisation d'un dépôt HTTPS"
+  become: true
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop: "{{ docker_apt_pkg }}"
+
+# http://docs.ansible.com/ansible/latest/apt_key_module.html
+- name: "Ajoute la clef officielle du dépôt Docker"
+  become: true
+  apt_key:
+    url: "{{ docker_apt_key }}"
+    state: present
+
+# http://docs.ansible.com/ansible/latest/apt_repository_module.html
+- name: "Ajoute le dépôt Docker"
+  become: true
+  apt_repository:
+    repo: "{{ docker_apt_repo }}"
+    state: present
+  register: install_docker_repository
+
+- name: Check if docker-ce package is avalable
+  command: apt-cache search docker-ce
+  register: docker_ce_available
+  failed_when: docker_ce_available.stdout == '' and docker_ce_available.skipped == True
+
+- name: Installe le paquet docker-ce
+  become: true
+  apt:
+    pkg: "docker-ce"
+    state: latest
+    update_cache: yes
+  when: docker_ce_available.failed == False
+
+- name: "Installe python-pip"
+  become: true
+  apt:
+    pkg: "python3-pip"
+    state: latest
+    update_cache: yes
+  when: docker_ce_available.failed == False
+
+# http://docs.ansible.com/ansible/latest/pip_module.html
+- name: "Installe docker-compose via pip"
+  become: true
+  pip:
+    name: docker-compose
+  when: docker_ce_available.failed == False
+
+# http://docs.ansible.com/ansible/latest/systemd_module.html
+- name: "Configure Docker pour qu'il démarre au boot"
+  become: true
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+  when: docker_ce_available.failed == False
+
+- name: "Ajoute l'utilisateur pi dans le groupe docker"
+  become: true
+  user:
+    name: "{{ ansible_user }}"
+    groups:
+      - docker
+    append: yes
+  when: docker_ce_available.failed == False
+
+- name: "Supprime la swap"
+  become: true
+  systemd:
+    name: dphys-swapfile
+    state: stopped
+    enabled: no
+  when: docker_ce_available.failed == False
+
+- name: Reboot the Debian or Ubuntu server
+  become: true
+  reboot:
+    msg: "Reboot initiated by Ansible due to docker installation"
+    connect_timeout: 5
+    reboot_timeout: 300
+    pre_reboot_delay: 0
+    post_reboot_delay: 30
+    test_command: uptime
+  when: docker_ce_available.failed == False

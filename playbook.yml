@@ -1,0 +1,13 @@
+---
+- name: Ansible Sandbox
+  hosts: all
+  become: false
+  roles:
+    - hostname
+    - update_system
+    - cron
+    - install_pkg
+    - zsh
+    - vim
+    - docker
+    - sshd

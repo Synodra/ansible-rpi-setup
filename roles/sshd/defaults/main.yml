@@ -1,0 +1,5 @@
+---
+modif_ssh:
+  disable_pwd_auth:
+    regexp: ^#?PasswordAuthentication
+    line: PasswordAuthentication no

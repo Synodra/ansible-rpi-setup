@@ -1,0 +1,18 @@
+---
+# found tuto on this repo https://github.com/codylane/ansible-playbook-change-hostname 
+
+- name: Change the hostname to inventory hostname
+  become: True
+  ansible.builtin.hostname:
+    name: "{{ inventory_hostname }}"
+    use: debian
+  tags: hosts
+
+- name: Fix /etc/hosts removing the old ansible_hostname
+  become: True
+  lineinfile:
+    state: present
+    path: /etc/hosts
+    line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}"
+    regexp: '^{{ ansible_default_ipv4.address }}'
+  tags: hosts

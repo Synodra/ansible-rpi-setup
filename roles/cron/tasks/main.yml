@@ -1,0 +1,32 @@
+---
+- name: Create a directory to welcome crontab scripts
+  become: true
+  file:
+    path: "/usr/local/bin/cron_scripts"
+    state: directory
+    mode: 0755
+
+- name: Copy crontab job file
+  become: true
+  copy:
+    src: "cron/auto_update.sh"
+    dest: "/usr/local/bin/cron_scripts"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+
+- name: Verify crontab script is available
+  stat:
+    path: "/usr/local/bin/cron_scripts/auto_update.sh"
+  register: verify_crontab_script
+
+- name: Create weekly update script
+  become: true
+  cron:
+    name: Auto update packages
+    minute: 30
+    hour: 4
+    weekday: 1
+    user: "{{ ansible_user }}"
+    job: "/usr/local/bin/cron_scripts/auto_update.sh"
+  when: verify_crontab_script.stat.exists

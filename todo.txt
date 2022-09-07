@@ -1,0 +1,8 @@
+- (A) Make a template to add ssh key on the server, in order to make easy the working from several computers
+- (B) deb pkg installation => template this part for better modularity +install_pkg
+- (B) Be able to choose the right deb pkg in function of the os ansible_architecture {{ansible_architecture}} +install_pkg
+- (C) Add firewall and port configuration for better security
+- (C) Add built-in observability softwares to monitor the cluster
+- (C) Refactor rolse for better uniformity
+- (D) Add unit tests
+- (D) Setup CI
