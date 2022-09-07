@@ -1,0 +1,10 @@
+---
+docker_apt_pkg:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg2
+  - software-properties-common
+
+docker_apt_key: "https://download.docker.com/linux/debian/gpg"
+docker_apt_repo: "deb https://download.docker.com/linux/debian stretch stable"

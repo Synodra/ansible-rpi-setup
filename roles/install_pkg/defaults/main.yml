@@ -1,0 +1,12 @@
+packages_to_install:
+  - curl
+  - fzf
+  - git
+  - bat
+  - vim
+  - neofetch
+  - tmux
+  - tree
+  - wget
+lsd_package_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
+lsd_package_name: lsd_0.22.0_arm64

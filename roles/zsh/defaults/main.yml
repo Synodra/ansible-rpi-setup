@@ -1,0 +1,8 @@
+---
+packages_to_install:
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+ohmyzsh_install_url: |
+  https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+powerlevel10k_theme_url: https://github.com/romkatv/powerlevel10k.git
