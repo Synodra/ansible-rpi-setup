@@ -1,4 +1,4 @@
-# rpi-ansible-setup
+# ansible-rpi-setup
 
 Ansible playbook aiming to automate the configuration of my rpi homalab.
 
