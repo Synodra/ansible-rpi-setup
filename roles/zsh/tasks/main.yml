@@ -61,6 +61,24 @@
   when: powerlevel10k_package_check.stat.exists == False
   tags: git
 
+- name: Install zsh-autosuggestions plugin
+  become: false
+  git:
+    repo: "{{ zsh_autosuggestions_git_url }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+
+- name: Install zsh-autosuggestions plugin
+  become: false
+  git:
+    repo: "{{ zsh_syntax_highlighting_git_url }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+
+- name: Install zsh-autosuggestions plugin
+  become: false
+  git:
+    repo: "{{ zsh_completions_git_url }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-completions"
+    
 # update zsh with my configs
 - name: Copy personnal .zshrc file
   become: False
