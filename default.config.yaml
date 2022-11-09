@@ -10,3 +10,18 @@ change_default_hostname_enable: false
 
 # Install CRON jobs
 install_cron_enable: false
+
+# Install packages configuration
+install_packages_enable: true
+packages_to_install:
+  - curl
+  - fzf
+  - git
+  - bat
+  - vim
+  - neofetch
+  - tmux
+  - tree
+  - wget
+packages_lsd_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
+packages_lsd_pkg_name: lsd_0.22.0_arm64

@@ -2,35 +2,32 @@
 # Install package with apt
 - name: Install packages
   become: true
-  apt:
+  ansible.builtin.apt:
     pkg: "{{ item }}"
-    state: latest
-    update_cache: true
-  loop: "{{packages_to_install}}"
+  loop: "{{ packages_to_install }}"
 
 # Install lsd package by downloading archive from git
 - name: Check if lsd package is installed
-  command: dpkg-query -W lsd
+  ansible.builtin.command: dpkg-query -W lsd
   register: lsd_package_check_deb
   failed_when: lsd_package_check_deb.rc > 1
   changed_when: lsd_package_check_deb.rc == 1
-  # check_mode: false
 
 - name: Download lsd package
-  get_url: 
-    url: "{{ lsd_package_url }}"
-    dest: "{{ ansible_env.HOME }}/{{ lsd_package_name }}.deb"
+  ansible.builtin.get_url:
+    url: "{{ packages_lsd_url }}"
+    dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+    mode: 0644
   when: lsd_package_check_deb.rc == 1
 
 - name: Install lsd package
   become: true
-  apt: 
-    deb: "{{ ansible_env.HOME }}/{{ lsd_package_name }}.deb"
+  ansible.builtin.apt:
+    deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
   when: lsd_package_check_deb.rc == 1
 
 - name: Delete the .deb archive downloaded
-  file:
-    path: "{{ ansible_env.HOME }}/{{ lsd_package_name }}.deb"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
     state: absent
   when: lsd_package_check_deb.rc == 1
-  
