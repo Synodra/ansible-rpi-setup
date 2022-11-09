@@ -3,8 +3,6 @@
   hosts: all
   become: true
   roles:
-    - hostname
-    - update_system
     - cron
     - install_pkg
     - zsh
@@ -25,6 +23,9 @@
       ansible.builtin.import_tasks: tasks/handlers.yaml
 
   tasks:
-    - name: 1️⃣  Change default hostname
+    - name: 1️⃣  Update all system packages
+      ansible.builtin.include_tasks: tasks/update_system.yaml
+
+    - name: 2️⃣  Change default hostname
       ansible.builtin.include_tasks: tasks/hostname.yaml
       when: change_default_hostname_enable
