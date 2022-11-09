@@ -44,7 +44,7 @@ vim_directory:
   - "{{ ansible_env.HOME }}/.vim/init"
 vim_plug_url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-#Install docker configuration
+# Install docker configuration
 install_docker_enable: false
 docker_apt_pkg:
   - apt-transport-https
@@ -54,3 +54,10 @@ docker_apt_pkg:
   - software-properties-common
 docker_apt_key: "https://download.docker.com/linux/debian/gpg"
 docker_apt_repo: "deb https://download.docker.com/linux/debian bullseye stable"
+
+# Configure sshd configuration
+install_sshd_enable: false
+sshd_modif_ssh:
+  disable_pwd_auth:
+    regexp: ^#?PasswordAuthentication
+    line: PasswordAuthentication no

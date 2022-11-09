@@ -2,10 +2,6 @@
 - name: Ansible Sandbox
   hosts: all
   become: true
-  roles:
-    - docker
-    - sshd
-
 
   pre_tasks:
     - name: 0️⃣  Load configuration (with defaults from example file)
@@ -39,6 +35,14 @@
       ansible.builtin.include_tasks: tasks/zsh.yaml
       when: install_zsh_enable
 
-    - name: 6️⃣  Install and configure Vim
+    - name: 6️⃣  Install and configure vim
       ansible.builtin.include_tasks: tasks/vim.yaml
       when: install_vim_enable
+
+    - name: 7️⃣  Install docker
+      ansible.builtin.include_tasks: tasks/docker.yaml
+      when: install_docker_enable
+
+    - name: 8️⃣  Configure ssh server
+      ansible.builtin.include_tasks: tasks/sshd.yaml
+      when: install_sshd_enable
