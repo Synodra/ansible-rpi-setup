@@ -1,33 +1,53 @@
 ---
-# Install package with apt
-- name: Install packages
+- name: Add signing keys
+  become: true
+  ansible.builtin.apt_key:
+    url: "{{ item.key }}"
+    state: present
+  loop: "{{ packages_add_repository }}"
+
+- name: Add repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: 'deb {{ item.repository }} {{ ansible_distribution_release }} stable'
+    state: present
+  loop: "{{ packages_add_repository }}"
+
+- name: Install common packages
   become: true
   ansible.builtin.apt:
     pkg: "{{ item }}"
+    update_cache: true
   loop: "{{ packages_to_install }}"
-
-# Install lsd package by downloading archive from git
-- name: Check if lsd package is installed
-  ansible.builtin.command: dpkg-query -W lsd
-  register: lsd_package_check_deb
-  failed_when: lsd_package_check_deb.rc > 1
-  changed_when: lsd_package_check_deb.rc == 1
-
-- name: Download lsd package
-  ansible.builtin.get_url:
-    url: "{{ packages_lsd_url }}"
-    dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-    mode: 0644
-  when: lsd_package_check_deb.rc == 1
+  notify: Reboot the machine
 
 - name: Install lsd package
-  become: true
-  ansible.builtin.apt:
-    deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-  when: lsd_package_check_deb.rc == 1
+  block:
+    - name: Download lsd package
+      ansible.builtin.get_url:
+        url: "{{ packages_lsd_url }}"
+        dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+        mode: 0644
+      register: download_deb
 
-- name: Delete the .deb archive downloaded
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-    state: absent
-  when: lsd_package_check_deb.rc == 1
+    - name: Install lsd package
+      become: true
+      ansible.builtin.apt:
+        deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+      ignore_errors: true
+      register: ignore_errors_register
+      when: verify_crontab_script.stat.exists
+
+    - name: Delete the .deb archive downloaded
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+        state: absent
+      ignore_errors: true
+      register: ignore_errors_register
+      when: verify_crontab_script.stat.exists
+
+- name: Start Tailscale session
+  become: true
+  ansible.builtin.command: "sudo tailscale up --accept-dns=false --authkey {{ packages_tailscale_auth_key }}"
+  register: tailscale_start
+  changed_when: tailscale_start.rc != 0

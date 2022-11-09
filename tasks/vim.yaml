@@ -1,6 +1,5 @@
 ---
 - name: Ensure .vim/{autoload,bundle} directory exists
-  become: false
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -9,7 +8,6 @@
   loop: "{{ vim_directory }}"
 
 - name: Copy vim dotfile
-  become: false
   ansible.builtin.copy:
     src: "dotfiles/.vimrc"
     dest: "{{ ansible_env.HOME }}/.vimrc"
@@ -18,13 +16,11 @@
     mode: 0750
 
 - name: Verify that autoload folder exists
-  become: false
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.vim/autoload"
   register: vim_autoload_details
 
 - name: Ensure vim-plug is in place
-  become: false
   ansible.builtin.get_url:
     url: "{{ vim_plug_url }}"
     dest: "{{ ansible_env.HOME }}/.vim/autoload/plug.vim"
@@ -32,7 +28,6 @@
   when: vim_autoload_details.stat.exists
 
 - name: Perform the plugins installation with PlugInstall
-  become: false
   ansible.builtin.command: "vim -e -i NONE -c 'PlugInstall' -c 'PlugClean' -c 'qa'"
   ignore_errors: true
   register: ignore_errors_register

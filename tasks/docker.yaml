@@ -1,28 +1,5 @@
 ---
-# tasks file for ansible-raspberrypi-docker
-
-# http://docs.ansible.com/ansible/latest/apt_module.html
-- name: "Installe les paquets nécessaires à l'utilisation d'un dépôt HTTPS"
-  become: true
-  ansible.builtin.apt:
-    pkg: "{{ item }}"
-  loop: "{{ docker_apt_pkg }}"
-
-# http://docs.ansible.com/ansible/latest/apt_key_module.html
-- name: "Ajoute la clef officielle du dépôt Docker"
-  become: true
-  ansible.builtin.apt_key:
-    url: "{{ docker_apt_key }}"
-    state: present
-
-# http://docs.ansible.com/ansible/latest/apt_repository_module.html
-- name: "Ajoute le dépôt Docker"
-  become: true
-  ansible.builtin.apt_repository:
-    repo: "{{ docker_apt_repo }}"
-    state: present
-  register: install_docker_repository
-
+# Docker repository is added in the install package task.
 - name: Check if docker-ce package is avalable
   ansible.builtin.command: apt-cache search docker-ce
   register: docker_ce_available
@@ -33,6 +10,7 @@
   become: true
   ansible.builtin.apt:
     pkg: "docker-ce"
+    update_cache: true
   when: not docker_ce_available.failed
 
 - name: "Installe python-pip"
@@ -73,14 +51,4 @@
     state: stopped
     enabled: false
   when: not docker_ce_available.failed
-
-- name: Reboot the Debian or Ubuntu server
-  become: true
-  ansible.builtin.reboot:
-    msg: "Reboot initiated by Ansible due to docker installation"
-    connect_timeout: 5
-    reboot_timeout: 300
-    pre_reboot_delay: 0
-    post_reboot_delay: 30
-    test_command: uptime
-  when: not docker_ce_available.failed
+  notify: Reboot the machine
