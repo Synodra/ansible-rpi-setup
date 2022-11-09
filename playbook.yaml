@@ -1,7 +1,6 @@
 ---
-- name: Ansible Sandbox
+- name: RPI setup
   hosts: all
-  become: false
 
   pre_tasks:
     - name: 0️⃣  Load configuration (with defaults from example file)

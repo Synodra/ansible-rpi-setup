@@ -10,6 +10,11 @@ install_cron_enable: false
 
 # Install packages configuration
 install_packages_enable: true
+packages_add_repository:
+  - {key: https://pkgs.tailscale.com/stable/raspbian/bullseye.noarmor.gpg
+    ,repository: https://pkgs.tailscale.com/stable/raspbian}
+  - {key: https://download.docker.com/linux/debian/gpg
+    ,repository: https://download.docker.com/linux/debian}
 packages_to_install:
   - curl
   - fzf
@@ -20,11 +25,16 @@ packages_to_install:
   - tmux
   - tree
   - wget
-  - apt-transport-https       # Requirement for Tailscale
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg2
+  - software-properties-common
+  - tailscale
 packages_lsd_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
 packages_lsd_pkg_name: lsd_0.22.0_arm64
-packages_tailscale_signing_key: https://pkgs.tailscale.com/stable/raspbian/buster.gpg
-packages_tailscale_repository: https://pkgs.tailscale.com/stable/raspbian/buster.list
+packages_tailscale_auth_key: "update_this_key"
+
 
 # Install & configure zsh configuration
 install_zsh_enable: false
@@ -49,14 +59,6 @@ vim_plug_url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vi
 
 # Install docker configuration
 install_docker_enable: false
-docker_apt_pkg:
-  - apt-transport-https
-  - ca-certificates
-  - curl
-  - gnupg2
-  - software-properties-common
-docker_apt_key: "https://download.docker.com/linux/debian/gpg"
-docker_apt_repo: "deb https://download.docker.com/linux/debian bullseye stable"
 
 # Configure sshd configuration
 install_sshd_enable: false

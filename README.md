@@ -8,7 +8,7 @@ This repo contains an Ansible playbook aiming to automate the configuration of m
 - Insert the sd card & power the Raspberry PIs
 - Clone this repo
 - Personalized `config.yaml` & `inventories.yaml` using default file
-- Launch the Ansible script : `ansible-playbook playbook.yaml -i inventories.yaml --ask-become-pass`
+- Launch the Ansible script : `ansible-playbook playbook.yaml -K -i inventories.yaml`
 
 
 
@@ -16,7 +16,7 @@ This repo contains an Ansible playbook aiming to automate the configuration of m
 
 ### Testing the Playbook
 
-The Ansible playbook can be tested with a dry run using this command : `ansible-playbook playbook.yaml -i inventories.yaml --ask-become-pass --check`.
+The Ansible playbook can be tested with a dry run using this command : `ansible-playbook playbook.yaml -K -i inventories.yaml --check`.
 
 ### Set up ansible user w/ shell
 

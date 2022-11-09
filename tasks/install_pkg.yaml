@@ -1,13 +1,26 @@
 ---
-# Install package with apt
+- name: Add signing keys
+  become: true
+  ansible.builtin.apt_key:
+    url: "{{ item.key }}"
+    state: present
+  loop: "{{ packages_add_repository }}"
+
+- name: Add repository
+  become: true
+  ansible.builtin.apt_repository:
+    repo: 'deb {{ item.repository }} {{ ansible_distribution_release }} stable'
+    state: present
+  loop: "{{ packages_add_repository }}"
+
 - name: Install common packages
   become: true
   ansible.builtin.apt:
     pkg: "{{ item }}"
     update_cache: true
   loop: "{{ packages_to_install }}"
+  notify: Reboot the machine
 
-# Install lsd package by downloading archive from git
 - name: Install lsd package
   block:
     - name: Download lsd package
@@ -15,33 +28,26 @@
         url: "{{ packages_lsd_url }}"
         dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
         mode: 0644
+      register: download_deb
 
     - name: Install lsd package
       become: true
       ansible.builtin.apt:
         deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+      ignore_errors: true
+      register: ignore_errors_register
+      when: verify_crontab_script.stat.exists
 
     - name: Delete the .deb archive downloaded
       ansible.builtin.file:
         path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
         state: absent
+      ignore_errors: true
+      register: ignore_errors_register
+      when: verify_crontab_script.stat.exists
 
-- name: Install Tailscale package
-  block:
-    - name: Tailscale | Add signing key
-      become: true
-      ansible.builtin.apt_key:
-        url: '{{ packages_tailscale_signing_key }}'
-        state: present
-
-    - name: Tailscale | Add repository
-      become: true
-      ansible.builtin.apt_repository:
-        repo: '{{ packages_tailscale_repository }}'
-        state: present'
-
-    - name: Install Tailscale
-      become: true
-      ansible.builtin.apt:
-        pkg: "tailscale"
-        update_cache: true
+- name: Start Tailscale session
+  become: true
+  ansible.builtin.command: "sudo tailscale up --accept-dns=false --authkey {{ packages_tailscale_auth_key }}"
+  register: tailscale_start
+  changed_when: tailscale_start.rc != 0

@@ -24,7 +24,7 @@
     path: "{{ ansible_env.HOME }}/.oh-my-zsh"
   register: ohmyzsh_package_check
 
-- name: Clone oh-my-zsh if it's not installed
+- name: Clone oh-my-zsh if it's not installed        # noqa: command-instead-of-module
   become: false
   # core.autocrlf=input prevents https://github.com/robbyrussell/oh-my-zsh/issues/4402
   ansible.builtin.command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git .oh-my-zsh'
@@ -46,39 +46,37 @@
 
 # Install powerlevel10k theme
 - name: Check if powerlevel10k is already installed
-  become: false
   ansible.builtin.stat:
     path: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
   register: powerlevel10k_package_check
 
 - name: Install powerlevel10k theme if not installed
-  become: false
   ansible.builtin.git:
     repo: "{{ powerlevel10k_theme_url }}"
     dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    version: latest
   when: not powerlevel10k_package_check.stat.exists
 
 - name: Install zsh-autosuggestions plugin
-  become: false
   ansible.builtin.git:
     repo: "{{ zsh_autosuggestions_git_url }}"
     dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-autosuggestions"
+    version: latest
 
 - name: Install zsh-autosuggestions plugin
-  become: false
   ansible.builtin.git:
     repo: "{{ zsh_syntax_highlighting_git_url }}"
     dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting"
+    version: latest
 
 - name: Install zsh-autosuggestions plugin
-  become: false
   ansible.builtin.git:
     repo: "{{ zsh_completions_git_url }}"
     dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/zsh-completions"
+    version: latest
 
 # Update zsh with my configs
 - name: Copy personnal .zshrc file
-  become: false
   ansible.builtin.copy:
     src: "dotfiles/.zshrc"
     dest: "{{ ansible_env.HOME }}/.zshrc"
@@ -88,7 +86,6 @@
   tags: copy
 
 - name: Copy personnal .p10k.zsh file
-  become: false
   ansible.builtin.copy:
     src: "dotfiles/.p10k.zsh"
     dest: "{{ ansible_env.HOME }}/.p10k.zsh"
@@ -123,7 +120,7 @@
     line: 'SHELL=/bin/zsh'
 
 - name: Copy personnal .zshrc file
-  become: false
+  become: true
   ansible.builtin.copy:
     src: "dotfiles/.zshrc"
     dest: "/etc/skel/"
@@ -133,7 +130,7 @@
   tags: copy
 
 - name: Copy personnal .p10k.zsh file
-  become: false
+  become: true
   ansible.builtin.copy:
     src: "dotfiles/.p10k.zsh"
     dest: "/etc/skel/"
