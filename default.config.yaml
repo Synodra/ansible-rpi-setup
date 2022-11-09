@@ -1,7 +1,4 @@
 ---
-# Location where configuration files will be stored.
-home_dir: '~'
-
 # Update system packages
 update_system_enable: true
 
@@ -25,3 +22,14 @@ packages_to_install:
   - wget
 packages_lsd_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
 packages_lsd_pkg_name: lsd_0.22.0_arm64
+
+# Install & configure zsh
+install_zsh_enable: false
+zsh_packages:
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+powerlevel10k_theme_url: https://github.com/romkatv/powerlevel10k.git
+zsh_autosuggestions_git_url: https://github.com/zsh-users/zsh-autosuggestions.git
+zsh_syntax_highlighting_git_url: https://github.com/zsh-users/zsh-syntax-highlighting.git
+zsh_completions_git_url: https://github.com/zsh-users/zsh-completions.git

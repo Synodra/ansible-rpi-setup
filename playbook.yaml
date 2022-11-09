@@ -3,9 +3,6 @@
   hosts: all
   become: true
   roles:
-    - cron
-    - install_pkg
-    - zsh
     - vim
     - docker
     - sshd
@@ -34,3 +31,11 @@
     - name: 3️⃣  Install CRON jobs
       ansible.builtin.include_tasks: tasks/cron.yaml
       when: install_cron_enable
+
+    - name: 4️⃣  Install packages
+      ansible.builtin.include_tasks: tasks/install_pkg.yaml
+      when: install_packages_enable
+
+    - name: 5️⃣  Install and configure zsh
+      ansible.builtin.include_tasks: tasks/zsh.yaml
+      when: install_zsh_enable
