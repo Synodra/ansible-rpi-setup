@@ -1,14 +1,16 @@
 ---
+# Script to improve with this tuto : https://superuser.com/questions/1491793/how-to-create-cron-jobs-that-require-sudo-permissions
+
 - name: Create a directory to welcome crontab scripts
   become: true
-  file:
+  ansible.builtin.file:
     path: "/usr/local/bin/cron_scripts"
     state: directory
     mode: 0755
 
 - name: Copy crontab job file
   become: true
-  copy:
+  ansible.builtin.copy:
     src: "cron/auto_update.sh"
     dest: "/usr/local/bin/cron_scripts"
     owner: "{{ ansible_user }}"
@@ -16,13 +18,13 @@
     mode: 0755
 
 - name: Verify crontab script is available
-  stat:
+  ansible.builtin.stat:
     path: "/usr/local/bin/cron_scripts/auto_update.sh"
   register: verify_crontab_script
 
 - name: Create weekly update script
   become: true
-  cron:
+  ansible.builtin.cron:
     name: Auto update packages
     minute: 30
     hour: 4

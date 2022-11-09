@@ -9,3 +9,4 @@
 (C) Add built-in observability softwares to monitor the cluster
 (D) Add unit tests
 (D) Setup CI
+(B) Update update cron job with built-in linux solution

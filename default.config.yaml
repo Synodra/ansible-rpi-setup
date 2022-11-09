@@ -7,3 +7,6 @@ update_system_enable: true
 
 # Hostname configuration
 change_default_hostname_enable: false
+
+# Install CRON jobs
+install_cron_enable: false
