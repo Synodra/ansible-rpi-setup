@@ -1,0 +1,6 @@
+---
+# Location where configuration files will be stored.
+home_dir: '~'
+
+# Hostname configuration
+change_default_hostname_enable: false

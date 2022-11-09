@@ -1,7 +1,7 @@
 ---
 - name: Ansible Sandbox
   hosts: all
-  become: false
+  become: true
   roles:
     - hostname
     - update_system
@@ -11,3 +11,20 @@
     - vim
     - docker
     - sshd
+
+
+  pre_tasks:
+    - name: 0️⃣  Load configuration (with defaults from example file)
+      ansible.builtin.include_vars: "{{ item }}"
+      loop:
+        - default.config.yaml
+        - config.yaml
+
+  handlers:
+    - name: Include handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
+
+  tasks:
+    - name: 1️⃣  Change default hostname
+      ansible.builtin.include_tasks: tasks/hostname.yaml
+      when: change_default_hostname_enable
