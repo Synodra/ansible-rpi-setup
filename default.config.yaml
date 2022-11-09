@@ -20,8 +20,11 @@ packages_to_install:
   - tmux
   - tree
   - wget
+  - apt-transport-https       # Requirement for Tailscale
 packages_lsd_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
 packages_lsd_pkg_name: lsd_0.22.0_arm64
+packages_tailscale_signing_key: https://pkgs.tailscale.com/stable/raspbian/buster.gpg
+packages_tailscale_repository: https://pkgs.tailscale.com/stable/raspbian/buster.list
 
 # Install & configure zsh configuration
 install_zsh_enable: false

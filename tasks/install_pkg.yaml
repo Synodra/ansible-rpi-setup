@@ -1,33 +1,47 @@
 ---
 # Install package with apt
-- name: Install packages
+- name: Install common packages
   become: true
   ansible.builtin.apt:
     pkg: "{{ item }}"
+    update_cache: true
   loop: "{{ packages_to_install }}"
 
 # Install lsd package by downloading archive from git
-- name: Check if lsd package is installed
-  ansible.builtin.command: dpkg-query -W lsd
-  register: lsd_package_check_deb
-  failed_when: lsd_package_check_deb.rc > 1
-  changed_when: lsd_package_check_deb.rc == 1
-
-- name: Download lsd package
-  ansible.builtin.get_url:
-    url: "{{ packages_lsd_url }}"
-    dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-    mode: 0644
-  when: lsd_package_check_deb.rc == 1
-
 - name: Install lsd package
-  become: true
-  ansible.builtin.apt:
-    deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-  when: lsd_package_check_deb.rc == 1
+  block:
+    - name: Download lsd package
+      ansible.builtin.get_url:
+        url: "{{ packages_lsd_url }}"
+        dest: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+        mode: 0644
 
-- name: Delete the .deb archive downloaded
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
-    state: absent
-  when: lsd_package_check_deb.rc == 1
+    - name: Install lsd package
+      become: true
+      ansible.builtin.apt:
+        deb: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+
+    - name: Delete the .deb archive downloaded
+      ansible.builtin.file:
+        path: "{{ ansible_env.HOME }}/{{ packages_lsd_pkg_name }}.deb"
+        state: absent
+
+- name: Install Tailscale package
+  block:
+    - name: Tailscale | Add signing key
+      become: true
+      ansible.builtin.apt_key:
+        url: '{{ packages_tailscale_signing_key }}'
+        state: present
+
+    - name: Tailscale | Add repository
+      become: true
+      ansible.builtin.apt_repository:
+        repo: '{{ packages_tailscale_repository }}'
+        state: present'
+
+    - name: Install Tailscale
+      become: true
+      ansible.builtin.apt:
+        pkg: "tailscale"
+        update_cache: true
