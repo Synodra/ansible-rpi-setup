@@ -1,5 +1,5 @@
 (A) Make a template to add ssh key on the server, in order to make easy the working from several computers
-(A) Replace all roles by tasks.
+x (A) Replace all roles by tasks.
 (A) Add tailscale installation
 (A) Make tailscale start at each boot
 (B) deb pkg installation => template this part for better modularity +install_pkg
