@@ -2,6 +2,9 @@
 
 ### Ansible ###
 *.retry
+inventories.yaml
+config.yaml
+sandbox.yaml
 
 ### macOS ###
 # General

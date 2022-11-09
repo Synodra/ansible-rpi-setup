@@ -14,22 +14,16 @@ Ansible playbook aiming to automate the configuration of my rpi homalab.
 The playbook can be launch with the following command :
 
 ```bash
-ansible-playbook playbook.yml -i inventories
+ansible-playbook playbook.yaml -i inventories.yaml
 ```
 
 ### Launch a dry run of this playbook
 
 ```bash
-ansible-playbook playbook.yml -l thor -i inventories --check
+ansible-playbook playbook.yaml -i inventories.yaml --check
 ```
 
 ## Other informations
-
-### Command to verify host file
-
-```bash
-ansible-inventory --list -i hosts -y
-```
 
 ### Set up ansible user w/ shell
 

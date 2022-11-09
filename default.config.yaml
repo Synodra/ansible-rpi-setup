@@ -1,0 +1,63 @@
+---
+# Update system packages
+update_system_enable: true
+
+# Hostname configuration
+change_default_hostname_enable: false
+
+# Install CRON jobs configuration
+install_cron_enable: false
+
+# Install packages configuration
+install_packages_enable: true
+packages_to_install:
+  - curl
+  - fzf
+  - git
+  - bat
+  - vim
+  - neofetch
+  - tmux
+  - tree
+  - wget
+packages_lsd_url: https://github.com/Peltoche/lsd/releases/download/0.22.0/lsd_0.22.0_arm64.deb
+packages_lsd_pkg_name: lsd_0.22.0_arm64
+
+# Install & configure zsh configuration
+install_zsh_enable: false
+zsh_packages:
+  - zsh
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+powerlevel10k_theme_url: https://github.com/romkatv/powerlevel10k.git
+zsh_autosuggestions_git_url: https://github.com/zsh-users/zsh-autosuggestions.git
+zsh_syntax_highlighting_git_url: https://github.com/zsh-users/zsh-syntax-highlighting.git
+zsh_completions_git_url: https://github.com/zsh-users/zsh-completions.git
+
+# Install & configure vim configuration
+install_vim_enable: false
+vim_directory:
+  - "{{ ansible_env.HOME }}/.vim"
+  - "{{ ansible_env.HOME }}/.vim/autoload"
+  - "{{ ansible_env.HOME }}/.vim/bundle"
+  - "{{ ansible_env.HOME }}/.vim/plugged"
+  - "{{ ansible_env.HOME }}/.vim/init"
+vim_plug_url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Install docker configuration
+install_docker_enable: false
+docker_apt_pkg:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg2
+  - software-properties-common
+docker_apt_key: "https://download.docker.com/linux/debian/gpg"
+docker_apt_repo: "deb https://download.docker.com/linux/debian bullseye stable"
+
+# Configure sshd configuration
+install_sshd_enable: false
+sshd_modif_ssh:
+  disable_pwd_auth:
+    regexp: ^#?PasswordAuthentication
+    line: PasswordAuthentication no

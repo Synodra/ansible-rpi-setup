@@ -1,0 +1,10 @@
+---
+- name: Setup parameters in sshd config file
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '{{ item.value.regexp }}'
+    line: '{{ item.value.line }}'
+  with_dict: "{{ sshd_modif_ssh }}"
+  notify: Reload sshd

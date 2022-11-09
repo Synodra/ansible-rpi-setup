@@ -1,0 +1,48 @@
+---
+- name: Ansible Sandbox
+  hosts: all
+  become: true
+
+  pre_tasks:
+    - name: 0️⃣  Load configuration (with defaults from example file)
+      ansible.builtin.include_vars: "{{ item }}"
+      loop:
+        - default.config.yaml
+        - config.yaml
+
+  handlers:
+    - name: Include handlers
+      ansible.builtin.import_tasks: tasks/handlers.yaml
+
+  tasks:
+    - name: 1️⃣  Update all system packages
+      ansible.builtin.include_tasks: tasks/update_system.yaml
+      when: update_system_enable
+
+    - name: 2️⃣  Change default hostname
+      ansible.builtin.include_tasks: tasks/hostname.yaml
+      when: change_default_hostname_enable
+
+    - name: 3️⃣  Install CRON jobs
+      ansible.builtin.include_tasks: tasks/cron.yaml
+      when: install_cron_enable
+
+    - name: 4️⃣  Install packages
+      ansible.builtin.include_tasks: tasks/install_pkg.yaml
+      when: install_packages_enable
+
+    - name: 5️⃣  Install and configure zsh
+      ansible.builtin.include_tasks: tasks/zsh.yaml
+      when: install_zsh_enable
+
+    - name: 6️⃣  Install and configure vim
+      ansible.builtin.include_tasks: tasks/vim.yaml
+      when: install_vim_enable
+
+    - name: 7️⃣  Install docker
+      ansible.builtin.include_tasks: tasks/docker.yaml
+      when: install_docker_enable
+
+    - name: 8️⃣  Configure ssh server
+      ansible.builtin.include_tasks: tasks/sshd.yaml
+      when: install_sshd_enable
