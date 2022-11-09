@@ -3,7 +3,6 @@
   hosts: all
   become: true
   roles:
-    - vim
     - docker
     - sshd
 
@@ -39,3 +38,7 @@
     - name: 5️⃣  Install and configure zsh
       ansible.builtin.include_tasks: tasks/zsh.yaml
       when: install_zsh_enable
+
+    - name: 6️⃣  Install and configure Vim
+      ansible.builtin.include_tasks: tasks/vim.yaml
+      when: install_vim_enable
